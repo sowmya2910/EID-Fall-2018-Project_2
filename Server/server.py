@@ -1,3 +1,9 @@
+# Function to run WebSocket Server on the mentioned IP
+#
+# Authors: Sowmya Ramakrishnan and Vinayak Srivatsan Kovalam Mohan
+#
+
+#Importing Libraries
 import tornado.httpserver
 import tornado.httpserver
 import tornado.websocket
@@ -14,7 +20,7 @@ Please run `pip install tornado` with python of version 2.7.9 or greater to inst
 This program will echo back the reverse of whatever it receives.
 Messages are output to the terminal for debugging purposes.
 '''
-
+#WebSocket Start and Status
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print ('new connection')
@@ -33,10 +39,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 application = tornado.web.Application([
     (r'/ws', WSHandler),
+    #To display temperature and humidity plots, we send them as images to the server
     (r"/(tempgraph.jpg)", tornado.web.StaticFileHandler, {'path':'./'}),
     (r"/(humidgraph.jpg)", tornado.web.StaticFileHandler, {'path':'./'})
 ])
 
+#Reading obtained .csv file and returning appropriate data according to user's choice
 def get_data(message):
     csvfile = open('data.csv', 'r')
     line = csvfile.readlines()[-1]
@@ -66,11 +74,15 @@ def get_data(message):
     else:
         return 'Invalid Data. Please Try Again!'
 
+#main
 if __name__ == "__main__":
     http_server = tornado.httpserver.HTTPServer(application)
     port = 8888
+    #URLs for plots(images)
     tempgraphurl = 'http://10.0.0.37' + ':' + str(port) + '/tempgraph.jpg'
     humidgraphurl = 'http://10.0.0.37' + ':' + str(port) + '/humidgraph.jpg'
+    #my RPi's IP
     http_server.listen(8888, address='10.0.0.37')
+    #Starting WebServer
     print ('*** Starting WebSocket Server at 10.0.0.37 ***')
     tornado.ioloop.IOLoop.instance().start()
