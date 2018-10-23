@@ -1,8 +1,17 @@
+/*
+# Javascript to ensure connection, exchange of data between client and server and allocate functions for button presses
+#
+# Authors: Sowmya Ramakrishnan and Vinayak Srivatsan Kovalam Mohan
+#
+*/
+	
+//Log function
 log = function(data){
   $("div#terminal").prepend("</br>" +data);
   console.log(data);
 };
 
+//Initialisation variables
 $(document).ready(function () {
   var websocket;
   var temperature = 0;
@@ -22,11 +31,14 @@ $(document).ready(function () {
     websocket.onclose = function(evt) {
       alert("Retry Refreshing the Webpage!");
     }
-
+    
+    //Callback function
     websocket.onmessage = function(evt) {
 		
+	        //Using - delimiter to split and get data values
 		var data = evt.data.split("-")
-
+     
+		//For graphs, open new window
 		if(data[0] == "graph_temp"){
 			window.open(data[1]);
 		}
@@ -35,6 +47,7 @@ $(document).ready(function () {
 			window.open(data[1]);
 		}
 
+	    	//Current Temperature
 		if(data[0] == "current_temp"){
 			if(fahrenheit){
 				var temperature = parseFloat(data[1])
@@ -46,6 +59,7 @@ $(document).ready(function () {
 			}
 		}
 		
+	    	//Maximum Temperature
 		if(data[0] == "max_temp"){
 			if(fahrenheit){
 				var temperature = parseFloat(data[1])
@@ -57,6 +71,7 @@ $(document).ready(function () {
 			}
 		}
 		
+	    	//Minimum Temperature
 		if(data[0] == "min_temp"){
 			if(fahrenheit){
 				var temperature = parseFloat(data[1])
@@ -68,6 +83,7 @@ $(document).ready(function () {
 			}
 		}
 		
+	    	//Average Temperature
 		if(data[0] == "avg_temp"){
 			if(fahrenheit){
 				var temperature = parseFloat(data[1])
@@ -79,23 +95,28 @@ $(document).ready(function () {
 			}
 		}
 
+	    	//Current Humidity
 		if(data[0] == "current_hum"){
 			$("#Current_Humidity_Output").val(data[1] + "% Time Stamp: " + data[2]);
 		}
 		
+	    	//Maximum Humidity
 		if(data[0] == "max_hum"){
 			$("#Maximum_Humidity_Output").val(data[1] + "% Time Stamp: " + data[2]);
 		}
 		
+	    	//Minimum Humidity
 		if(data[0] == "min_hum"){
 			$("#Minimum_Humidity_Output").val(data[1] + "% Time Stamp: " + data[2]);
 		}
 		
+	    	//Average Humidity
 		if(data[0] == "avg_hum"){
 			$("#Average_Humidity_Output").val(data[1] + "% Time Stamp: " + data[2]);
 		}		
 	};
 
+    //On button presses, send appropriate data
     $("#Current_Temperature_Button").click(function(evt){
       websocket.send("current_temp");
     });
@@ -128,6 +149,7 @@ $(document).ready(function () {
       websocket.send("avg_hum");
     });
 
+    //Clearing values for the functionality of Clear Button
     $("#Clear").click(function(evt) {
       $("#Current_Temperature_Output").val(" ");
       $("#Average_Temperature_Output").val(" ");
@@ -139,12 +161,14 @@ $(document).ready(function () {
       $("#Maximum_Humidity_Output").val(" ");
     });
 
+    //Redirecting user to Login page for the functionality of Logout Button
     $("#Logout").click(function(evt) {
       websocket.send("Logged Out");
       window.location.replace("login.html");
     });
 	
-	$("#graph_temp").click(function(evt) {
+    //Graph data (images) are sent for plots
+    $("#graph_temp").click(function(evt) {
       websocket.send("graph_temp");
     });
 
@@ -152,12 +176,14 @@ $(document).ready(function () {
       websocket.send("graph_hum");
     });
 
+    //If user asks for a Unit Switch
     $("#SwitchUnit").click(function(evt){
       var data1;
-	  
+
+      //If Fahrenheit is asked
       if(fahrenheit){
 		  
-		switch_current_data = $("#Current_Temperature_Output").val()
+	switch_current_data = $("#Current_Temperature_Output").val()
         var data1 = switch_current_data.split("\u00b0")
         var temperature = parseFloat(data1[0])
         temperature = ((temperature-32)*5.0)/9.0
@@ -168,7 +194,7 @@ $(document).ready(function () {
           $("#Current_Temperature_Output").val("Error: No data");
         }
 		
-		switch_max_data = $("#Maximum_Temperature_Output").val()
+	switch_max_data = $("#Maximum_Temperature_Output").val()
         var data1 = switch_max_data.split("\u00b0")
         var temperature = parseFloat(data1[0])
         temperature = ((temperature-32)*5.0)/9.0
@@ -205,6 +231,7 @@ $(document).ready(function () {
         $("#SwitchUnit").fadeOut(300).val("Switch Scale: C to F").fadeIn(300)
       }
 
+      //Celcius values
       else{
 		  
         switch_current_data = $("#Current_Temperature_Output").val()
