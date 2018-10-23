@@ -20,7 +20,7 @@ Please run `pip install tornado` with python of version 2.7.9 or greater to inst
 This program will echo back the reverse of whatever it receives.
 Messages are output to the terminal for debugging purposes.
 '''
-#WebSocket Start and Status
+#WebSocket Initialization and Status
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print ('new connection')
