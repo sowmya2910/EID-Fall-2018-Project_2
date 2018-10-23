@@ -6,6 +6,12 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+# Function to display QT GUI and run a weather-monitoring application on the Server-side
+#
+# Authors: Sowmya Ramakrishnan and Vinayak Srivatsan Kovalam Mohan
+#
+
+#import libraries
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 import Adafruit_DHT 
@@ -17,6 +23,7 @@ import time
 
 class Ui_DHT22SensorData(object):
 
+    #Initialization variables
     def __init__(self):
         self.maximumtemperature = 0
         self.minimumtemperature = 50
@@ -25,7 +32,8 @@ class Ui_DHT22SensorData(object):
         self.temperaturesum = 0
         self.humiditysum = 0
         self.count = 1
-		
+	
+    #UI Parameters
     def setupUi(self, DHT22SensorData):
         DHT22SensorData.setObjectName("DHT22SensorData")
         DHT22SensorData.resize(547, 400)
@@ -189,6 +197,7 @@ class Ui_DHT22SensorData(object):
         self.verticalLayout.addWidget(self.TempLastValue)
         DHT22SensorData.setCentralWidget(self.centralwidget)
 
+	#Functions
         self.retranslateUi(DHT22SensorData)
         self.getTime()
         self.CelciusRadioButton.click()
@@ -222,6 +231,7 @@ class Ui_DHT22SensorData(object):
         self.Datelabel_9.setText(_translate("DHT22SensorData", "Average"))
         self.Datelabel_2.setText(_translate("DHT22SensorData", "Last value:"))
 
+    #Function to get current humidity and temperature data (in celcius), calculate max,min,avg and write them to a csv file
     def getDataCelcius(self):
         global count
         humidity, temperature = Adafruit_DHT.read(22,4)
@@ -267,7 +277,8 @@ class Ui_DHT22SensorData(object):
                 file_write = csv.writer(datafile, delimiter = ',')
                 file_write.writerow([0, 0, 0, 0, 0, 0, 0, 0, self.getTime()])
                 print("No Data Sensed")
-		
+	
+    #Function to get current humidity and temperature data (in fahrenheit), calculate max,min,avg and write them to a csv file
     def getDataFahrenheit(self):
         global count
         humidity, temperature = Adafruit_DHT.read(22,4)
@@ -314,13 +325,15 @@ class Ui_DHT22SensorData(object):
                 file_write = csv.writer(datafile, delimiter = ',')
                 file_write.writerow([0, 0, 0, 0, 0, 0, 0, 0, self.getTime()])
                 print("No Data Sensed")
-				
+	
+    #Function to get timestamp value
     def getTime(self):
         currenttime = datetime.datetime.now()
         now = currenttime.strftime("%m/%d/%Y %H:%M")
         self.Timelabel.setText(now)
         return now
-		
+	
+    #Function to plot temperature and humidity graphs based on readings from csv file
     def plotGraph(self):
         x = []
         y = []
@@ -340,7 +353,7 @@ class Ui_DHT22SensorData(object):
         plt.title('Temperature Variation Graph')
         fig2.savefig('tempgraph.jpg')
 		
-
+#main
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
